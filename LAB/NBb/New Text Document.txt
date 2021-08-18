@@ -1,0 +1,1 @@
+Here in the Iris dataset, the features are of real valued data and continuous. Hence GaussianNB is more suitable for classification.
