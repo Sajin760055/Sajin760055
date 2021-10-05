@@ -1,0 +1,33 @@
+#1. Import the packages and load data
+from sklearn.datasets import load_iris
+from tensorflow import keras
+iris = load_iris()
+X = iris.data
+Y = iris.target
+
+
+#2. Split the dataset
+from sklearn.model_selection import train_test_split
+X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size = 0.2,random_state = 42)
+
+#3. Defining the model - Input and Hidden Layer Construction
+
+model_dnn = keras.models.Sequential()
+model_dnn.add(keras.layers.Dense(units = 12, activation = 'relu',input_shape = X_train.shape[1:]))
+model_dnn.add(keras.layers.Dense(units = 10, activation = 'relu'))
+model_dnn.add(keras.layers.Dense(units = 8, activation = 'relu'))
+model_dnn.add(keras.layers.Dropout(0.75))
+model_dnn.add(keras.layers.Dense(units = 6, activation = 'relu'))
+model_dnn.add(keras.layers.Dense(units = 6, activation = 'relu'))
+model_dnn.add(keras.layers.Dense(units = 3, activation = 'sigmoid'))
+model_dnn.summary()
+
+#4 Compile the model and fit the data into model
+
+model_dnn.compile(loss= 'sparse_categorical_crossentropy',optimizer = 'adam' , metrics = ['accuracy'])
+model_dnn.fit(x=X_train , y =Y_train , validation_split = 0.1 , epochs =5, batch_size = 8)
+
+#5 Evaluating the model
+testloss,testaccuracy=model_dnn.evaluate(X_test,Y_test)
+print("Test loss observed on iris dataset = ",testloss)
+print("Test accuracy observed on iris dataset = ",testaccuracy)

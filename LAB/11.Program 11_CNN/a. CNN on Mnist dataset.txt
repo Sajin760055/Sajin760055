@@ -1,0 +1,43 @@
+
+
+import tensorflow as tf 
+import matplotlib.pyplot as plt 
+import numpy as np 
+import keras
+mnistDB=tf.keras.datasets.mnist
+
+#Splitting The Data
+(X_train,Y_train),(X_test,Y_test)=mnistDB.load_data()
+plt.imshow(X_train[15000],cmap="binary")
+X_train=X_train.reshape(60000,28,28,1) 
+X_test=X_test.reshape(10000,28,28,1)
+
+#Data Normalisation
+
+X_train=X_train.astype('float32')/255
+X_test=X_test.astype('float32')/255
+
+
+#Defining the model
+
+ML=keras.models.Sequential() 
+ML.add(keras.layers.Conv2D(32,(3,3),activation="relu",input_shape=X_train.shape[1:])) 
+ML.add(keras.layers.Conv2D(64,(3,3),activation="relu")) 
+ML.add(keras.layers.MaxPooling2D((2,2)))
+ML.add(keras.layers.Dropout(0.25)) 
+ML.add(keras.layers.Flatten()) 
+ML.add(keras.layers.Dense(128,activation='relu'))
+ML.add(keras.layers.Dropout(0.25))
+ML.add(keras.layers.Dense(units=10,activation="softmax"))
+ML.compile(loss="sparse_categorical_crossentropy",optimizer="adam",metrics=['Accuracy'])
+ML.summary() #Training the data
+history=ML.fit(X_train,Y_train,epochs=2,batch_size=16)
+
+
+#Evaluating the model
+ML.evaluate(X_test,Y_test)
+print("Evaluating the model:", ML.evaluate(X_test,Y_test))
+
+
+
+
